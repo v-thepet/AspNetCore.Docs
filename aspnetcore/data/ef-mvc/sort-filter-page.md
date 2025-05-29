@@ -2,7 +2,7 @@
 title: "Tutorial: Add sorting, filtering, and paging - ASP.NET MVC with EF Core"
 description: "In this tutorial you'll add sorting, filtering, and paging functionality to the Students Index page. You'll also create a page that does simple grouping."
 author: rick-anderson
-ms.author: tdykstra
+ms.author: riande
 ms.date: 03/27/2019
 ms.topic: tutorial
 uid: data/ef-mvc/sort-filter-page
@@ -36,7 +36,7 @@ To add sorting to the Student Index page, you'll change the `Index` method of th
 
 ### Add sorting Functionality to the Index method
 
-In *StudentsController.cs*, replace the `Index` method with the following code:
+In `StudentsController.cs`, replace the `Index` method with the following code:
 
 [!code-csharp[](intro/samples/cu/Controllers/StudentsController.cs?name=snippet_SortOnly)]
 
@@ -63,9 +63,9 @@ This code could get verbose with a large number of columns. [The last tutorial i
 
 ### Add column heading hyperlinks to the Student Index view
 
-Replace the code in *Views/Students/Index.cshtml*, with the following code to add column heading hyperlinks. The changed lines are highlighted.
+Replace the code in `Views/Students/Index.cshtml`, with the following code to add column heading hyperlinks. The changed lines are highlighted.
 
-[!code-html[](intro/samples/cu/Views/Students/Index2.cshtml?highlight=16,22)]
+[!code-cshtml[](intro/samples/cu/Views/Students/Index2.cshtml?highlight=16,22)]
 
 This code uses the information in `ViewData` properties to set up hyperlinks with the appropriate query string values.
 
@@ -79,7 +79,7 @@ To add filtering to the Students Index page, you'll add a text box and a submit 
 
 ### Add filtering functionality to the Index method
 
-In *StudentsController.cs*, replace the `Index` method with the following code (the changes are highlighted).
+In `StudentsController.cs`, replace the `Index` method with the following code (the changes are highlighted).
 
 [!code-csharp[](intro/samples/cu/Controllers/StudentsController.cs?name=snippet_SortFilter&highlight=1,5,9-13)]
 
@@ -92,9 +92,9 @@ You've added a `searchString` parameter to the `Index` method. The search string
 
 ### Add a Search Box to the Student Index View
 
-In *Views/Student/Index.cshtml*, add the highlighted code immediately before the opening table tag in order to create a caption, a text box, and a **Search** button.
+In `Views/Student/Index.cshtml`, add the highlighted code immediately before the opening table tag in order to create a caption, a text box, and a **Search** button.
 
-[!code-html[](intro/samples/cu/Views/Students/Index3.cshtml?range=9-23&highlight=5-13)]
+[!code-cshtml[](intro/samples/cu/Views/Students/Index3.cshtml?range=9-23&highlight=5-13)]
 
 This code uses the `<form>` [tag helper](xref:mvc/views/tag-helpers/intro) to add the search text box and button. By default, the `<form>` tag helper submits form data with a POST, which means that parameters are passed in the HTTP message body and not in the URL as query strings. When you specify HTTP GET, the form data is passed in the URL as query strings, which enables users to bookmark the URL. The W3C guidelines recommend that you should use GET when the action doesn't result in an update.
 
@@ -128,7 +128,7 @@ A `CreateAsync` method is used instead of a constructor to create the `Paginated
 
 ## Add paging to Index method
 
-In *StudentsController.cs*, replace the `Index` method with the following code.
+In `StudentsController.cs`, replace the `Index` method with the following code.
 
 [!code-csharp[](intro/samples/cu/Controllers/StudentsController.cs?name=snippet_SortFilterPage&highlight=1-5,7,11-18,45-46)]
 
@@ -171,9 +171,9 @@ The `PaginatedList.CreateAsync` method takes a page number. The two question mar
 
 ## Add paging links
 
-In *Views/Students/Index.cshtml*, replace the existing code with the following code. The changes are highlighted.
+In `Views/Students/Index.cshtml`, replace the existing code with the following code. The changes are highlighted.
 
-[!code-html[](intro/samples/cu/Views/Students/Index.cshtml?highlight=1,27,30,33,61-79)]
+[!code-cshtml[](intro/samples/cu/Views/Students/Index.cshtml?highlight=1,27,30,33,61-79)]
 
 The `@model` statement at the top of the page specifies that the view now gets a `PaginatedList<T>` object instead of a `List<T>` object.
 
@@ -206,48 +206,44 @@ Click the paging links in different sort orders to make sure paging works. Then 
 For the Contoso University website's **About** page, you'll display how many students have enrolled for each enrollment date. This requires grouping and simple calculations on the groups. To accomplish this, you'll do the following:
 
 * Create a view model class for the data that you need to pass to the view.
-
-* Modify the About method in the Home controller.
-
-* Modify the About view.
+* Create the About method in the Home controller.
+* Create the About view.
 
 ### Create the view model
 
 Create a *SchoolViewModels* folder in the *Models* folder.
 
-In the new folder, add a class file *EnrollmentDateGroup.cs* and replace the template code with the following code:
+In the new folder, add a class file `EnrollmentDateGroup.cs` and replace the template code with the following code:
 
 [!code-csharp[](intro/samples/cu/Models/SchoolViewModels/EnrollmentDateGroup.cs)]
 
 ### Modify the Home Controller
 
-In *HomeController.cs*, add the following using statements at the top of the file:
+In `HomeController.cs`, add the following using statements at the top of the file:
 
 [!code-csharp[](intro/samples/cu/Controllers/HomeController.cs?name=snippet_Usings1)]
 
 Add a class variable for the database context immediately after the opening curly brace for the class, and get an instance of the context from ASP.NET Core DI:
 
-[!code-csharp[](intro/samples/cu/Controllers/HomeController.cs?name=snippet_AddContext&highlight=3,5,7)]
+[!code-csharp[](intro/samples/cu/Controllers/HomeController.cs?name=snippet_AddContext&highlight=4,6,9)]
 
 Add an `About` method with the following code:
 
 [!code-csharp[](intro/samples/cu/Controllers/HomeController.cs?name=snippet_UseDbSet)]
 
 The LINQ statement groups the student entities by enrollment date, calculates the number of entities in each group, and stores the results in a collection of `EnrollmentDateGroup` view model objects.
-> [!NOTE]
-> In the 1.0 version of Entity Framework Core, the entire result set is returned to the client, and grouping is done on the client. In some scenarios this could create performance problems. Be sure to test performance with production volumes of data, and if necessary use raw SQL to do the grouping on the server. For information about how to use raw SQL, see [the last tutorial in this series](advanced.md).
 
-### Modify the About View
+### Create the About View
 
-Add a *Views/Home/About.cshtml* file with the following code:
+Add a `Views/Home/About.cshtml` file with the following code:
 
-[!code-html[](intro/samples/cu/Views/Home/About.cshtml)]
+[!code-cshtml[](intro/samples/cu/Views/Home/About.cshtml)]
 
 Run the app and go to the About page. The count of students for each enrollment date is displayed in a table.
 
 ## Get the code
 
-[Download or view the completed application.](https://github.com/aspnet/Docs/tree/master/aspnetcore/data/ef-mvc/intro/samples/cu-final)
+[Download or view the completed application.](https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/data/ef-mvc/intro/samples/cu-final)
 
 ## Next steps
 

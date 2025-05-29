@@ -10,13 +10,13 @@ Articles are stored in the repository as Markdown files. Simple changes to the c
 
 You need a basic understanding of [Git and GitHub.com](https://guides.github.com/activities/hello-world/).
 
-* Open an [issue](https://github.com/aspnet/Docs/issues/new) describing what you want to do, such as changing an existing article or creating a new one. We often request an outline for a new topic suggestion. Wait for approval from the team before you invest much time.
-* Fork the [aspnet/Docs](https://github.com/aspnet/Docs/) repo and create a branch for your changes.
-* Submit a PR to master with your changes.
+* Open an [issue](https://github.com/dotnet/AspNetCore.Docs/issues/new) describing what you want to do, such as changing an existing article or creating a new one. We often request an outline for a new topic suggestion. Wait for approval from the team before you invest much time.
+* Fork the [aspnet/Docs](https://github.com/dotnet/AspNetCore.Docs/) repo and create a branch for your changes.
+* Submit a PR to the *main* branch with your changes.
 * If your PR has the label 'cla-required' assigned, [complete the Contribution License Agreement (CLA)](https://cla.dotnetfoundation.org/).
 * Respond to PR feedback.
 
-For an example where this process led to publication of a new article, see [Issue &num;67](https://github.com/dotnet/docs/issues/67) and [Pull Request &num;798](https://github.com/dotnet/docs/pull/798) in the .NET Docs repository. The new article is [Documenting your code](https://docs.microsoft.com/dotnet/articles/csharp/codedoc).
+For an example where this process led to publication of a new article, see [Issue 1477](https://github.com/dotnet/docs/issues/1477) and [Pull Request 18955](https://github.com/dotnet/docs/pull/18955) in the .NET Docs repository. The new article is [Use code coverage for unit testing](https://docs.microsoft.com/dotnet/core/testing/unit-testing-code-coverage).
 
 ## Docs Authoring Pack extension in Visual Studio Code
 
@@ -24,11 +24,11 @@ If you use Visual Studio Code to contribute to the ASP.NET documentation, you ca
 
 ## Markdown syntax
 
-Articles are written in [DocFx-flavored Markdown](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html), which is a superset of [GitHub-flavored Markdown (GFM)](https://guides.github.com/features/mastering-markdown/). For examples of DFM syntax for UI features commonly used in the ASP.NET documentation, see [Metadata and Markdown Template](https://github.com/dotnet/docs/blob/master/styleguide/template.md) in the .NET Docs repo style guide. 
+Articles are written in [DocFx-flavored Markdown](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html), which is a superset of [GitHub-flavored Markdown (GFM)](https://guides.github.com/features/mastering-markdown/). For examples of DFM syntax for UI features commonly used in the ASP.NET documentation, see [Metadata and Markdown Template](https://github.com/dotnet/docs/blob/main/styleguide/template.md) in the .NET Docs repo style guide. 
 
 ## Folder structure conventions
 
-For each Markdown file, a folder for images and a folder for sample code may exist. If the article is [fundamentals/configuration/index.md](https://github.com/aspnet/Docs/blob/master/aspnetcore/fundamentals/configuration/index.md), the images are in [fundamentals/configuration/index/\_static](https://github.com/aspnet/Docs/tree/master/aspnetcore/fundamentals/configuration/index/_static) and the sample app project files are in [fundamentals/configuration/index/sample](https://github.com/aspnet/Docs/tree/master/aspnetcore/fundamentals/configuration/index/sample). An image in the *fundamentals/configuration/index.md* file is rendered by the following Markdown:
+For each Markdown file, a folder for images and a folder for sample code may exist. If the article is [fundamentals/configuration/index.md](https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/fundamentals/configuration/index.md), the images are in [fundamentals/configuration/index/\_static](https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/fundamentals/configuration/index/_static) and the sample app project files are in [fundamentals/configuration/index/sample](https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/fundamentals/configuration/index/sample). An image in the *fundamentals/configuration/index.md* file is rendered by the following Markdown:
 
 ```md
 ![description of image for alt attribute](configuration/index/_static/imagename.png)
@@ -46,7 +46,7 @@ Internal links should use the `uid` of the target article with an xref link (lin
 <xref:uid_of_the_topic>
 ```
 
-If the title of the article is unsuitable for link text (for example, a word or phrase in a sentence is the link text), specify the xref link and link text with the following:
+If the title of the article isn't intended for use in link text (for example, a word or phrase in a sentence is the link text), specify the xref link and link text with the following:
 
 ```md
 [link text](xref:uid_of_the_topic)
@@ -80,8 +80,8 @@ To render an entire code file as a snippet:
 To render a portion of a file as a snippet by using line numbers:
 
 ```md
-[!code-csharp[](configuration/index/sample/Program.cs?range=1-10,20,30,40-50]
-[!code-html[](configuration/index/sample/Views/Home/Index.cshtml?range=1-10,20,30,40-50]
+[!code-csharp[](configuration/index/sample/Program.cs?range=1-10,20,30,40-50)]
+[!code-html[](configuration/index/sample/Views/Home/Index.cshtml?range=1-10,20,30,40-50)]
 ```
 
 For C# snippets, reference a [C# region](https://docs.microsoft.com/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-region). Whenever possible, use regions rather than line numbers because line numbers in a code file tend to change and become out of sync with line number references in Markdown. C# regions can be nested. If referencing the outer region, the inner `#region` and `#endregion` directives aren't rendered in a snippet. 
@@ -96,9 +96,48 @@ To highlight selected lines in a rendered snippet (usually renders as yellow bac
 
 ```md
 [!code-csharp[](configuration/index/sample/Program.cs?name=snippet_Example&highlight=1-3,10,20-25)]
-[!code-csharp[](configuration/index/sample/Program.cs?range=10-20&highlight=1-3]
-[!code-html[](configuration/index/sample/Views/Home/Index.cshtml?range=10-20&highlight=1-3]
-[!code-javascript[](configuration/index/sample/UsingOptionsSample.csproj?range=10-20&highlight=1-3]
+[!code-csharp[](configuration/index/sample/Program.cs?range=10-20&highlight=1-3)]
+[!code-html[](configuration/index/sample/Views/Home/Index.cshtml?range=10-20&highlight=1-3)]
+[!code-javascript[](configuration/index/sample/UsingOptionsSample.csproj?range=10-20&highlight=1-3)]
+```
+
+When highlighting lines within regions, use line numbers (or a range of line numbers) relative to the snippet's `#region` directive, as seen in the following example.
+
+The following partial C# code (`Movie.cs`) example includes a region named `FinalSnippet` with three `using` statements:
+
+```csharp
+        ...
+        public decimal Price { get; set; }
+        public string? Rating {  get; set; }
+    }
+}
+#endregion
+#endif
+#if Final
+#region FinalSnippet
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MvcMovie.Models
+{
+    public class Movie
+    {
+        public int Id { get; set; }
+
+        ...
+    }
+}
+#endregion
+#endif
+```
+
+To highlight the three `using` statements from the preceding example, specify a `highlight` property in the query string with a value of `1-3`.
+
+Markdown:
+
+```md
+[!code-csharp[](sample/MvcMovie60/Models/Movie.cs?name=FinalSnippet&highlight=1-3)]
 ```
 
 ## Test changes with DocFX
@@ -149,7 +188,7 @@ DocFX requires:
 
 ## Voice and tone
 
-Our goal is to write documentation that is easily understandable by the widest possible audience. To that end, we established guidelines for writing style that we ask our contributors to follow. For more information, see [Voice and tone guidelines](https://github.com/dotnet/docs/blob/master/styleguide/voice-tone.md) in the .NET repo.
+Our goal is to write documentation that is easily understandable by the widest possible audience. To that end, we established guidelines for writing style that we ask our contributors to follow. For more information, see [Voice and tone guidelines](https://github.com/dotnet/docs/blob/main/styleguide/voice-tone.md) in the .NET repo.
 
 ## Microsoft Writing Style Guide
 
@@ -157,4 +196,4 @@ The [Microsoft Writing Style Guide](https://docs.microsoft.com/style-guide/welco
 
 ## Redirects
 
-If you delete an article, change its file name, or move it to a different folder, create a redirect so that people who bookmarked the article don't receive a *404 Not Found* error. Add redirects to the [master redirect file](https://github.com/aspnet/Docs/blob/master/.openpublishing.redirection.json).
+If you delete an article, change its file name, or move it to a different folder, create a redirect so that people who bookmarked the article don't receive a *404 Not Found* error. Add redirects to the [main redirect file](https://github.com/dotnet/AspNetCore.Docs/blob/main/.openpublishing.redirection.json).

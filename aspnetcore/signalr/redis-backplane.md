@@ -5,7 +5,7 @@ description: Learn how to set up a Redis backplane to enable scale-out for an AS
 monikerRange: '>= aspnetcore-2.1'
 ms.author: bradyg
 ms.custom: mvc
-ms.date: 11/28/2018
+ms.date: 11/12/2019
 uid: signalr/redis-backplane
 ---
 
@@ -20,18 +20,17 @@ This article explains SignalR-specific aspects of setting up a [Redis](https://r
 * Deploy a Redis server.
 
   > [!IMPORTANT] 
-  > For production use, a Redis backplane is recommended only when it runs in the same data center as the SignalR app. Otherwise, network latency degrades performance. If your SignalR app is running in the Azure cloud, we recommend Azure SignalR Service instead of a Redis backplane. You can use the Azure Redis Cache Service for development and test environments.
+  > For production use, a Redis backplane is recommended only when it runs in the same data center as the SignalR app. Otherwise, network latency degrades performance. If your SignalR app is running in the Azure cloud, we recommend Azure SignalR Service instead of a Redis backplane. 
 
   For more information, see the following resources:
 
   * <xref:signalr/scale>
   * [Redis documentation](https://redis.io/)
-  * [Azure Redis Cache documentation](https://docs.microsoft.com/azure/redis-cache/)
+  * [Azure Redis Cache documentation](/azure/redis-cache/)
 
-::: moniker range="= aspnetcore-2.1"
+:::moniker range="= aspnetcore-2.1"
 
-* In the SignalR app, install the `Microsoft.AspNetCore.SignalR.Redis` NuGet package. (There is also a `Microsoft.AspNetCore.SignalR.StackExchangeRedis` package, but that one is for ASP.NET Core 2.2 and later.)
-
+* In the SignalR app, install the `Microsoft.AspNetCore.SignalR.Redis` NuGet package.
 * In the `Startup.ConfigureServices` method, call `AddRedis` after `AddSignalR`:
 
   ```csharp
@@ -53,21 +52,56 @@ This article explains SignalR-specific aspects of setting up a [Redis](https://r
 
   In the preceding code, `options.Configuration` is initialized with whatever was specified in the connection string.
 
-::: moniker-end
+:::moniker-end
 
-::: moniker range="> aspnetcore-2.1"
+:::moniker range="= aspnetcore-2.2"
 
 * In the SignalR app, install one of the following NuGet packages:
 
   * `Microsoft.AspNetCore.SignalR.StackExchangeRedis` - Depends on StackExchange.Redis 2.X.X. This is the recommended package for ASP.NET Core 2.2 and later.
-  * `Microsoft.AspNetCore.SignalR.Redis` - Depends on StackExchange.Redis 1.X.X. This package will not be shipping in ASP.NET Core 3.0.
+  * `Microsoft.AspNetCore.SignalR.Redis` - Depends on StackExchange.Redis 1.X.X. This package isn't included in ASP.NET Core 3.0 and later.
 
-* In the `Startup.ConfigureServices` method, call `AddStackExchangeRedis` after `AddSignalR`:
+* In the `Startup.ConfigureServices` method, call <xref:Microsoft.Extensions.DependencyInjection.StackExchangeRedisDependencyInjectionExtensions.AddStackExchangeRedis*>:
 
   ```csharp
   services.AddSignalR().AddStackExchangeRedis("<your_Redis_connection_string>");
   ```
 
+ When using `Microsoft.AspNetCore.SignalR.Redis`, call <xref:Microsoft.Extensions.DependencyInjection.RedisDependencyInjectionExtensions.AddRedis*>.
+
+* Configure options as needed:
+ 
+  Most options can be set in the connection string or in the [ConfigurationOptions](https://stackexchange.github.io/StackExchange.Redis/Configuration#configuration-options) object. Options specified in `ConfigurationOptions` override the ones set in the connection string.
+
+  The following example shows how to set options in the `ConfigurationOptions` object. This example adds a channel prefix so that multiple apps can share the same Redis instance, as explained in the following step.
+
+  ```csharp
+  services.AddSignalR()
+    .AddStackExchangeRedis(connectionString, options => {
+        options.Configuration.ChannelPrefix = "MyApp";
+    });
+  ```
+
+ When using `Microsoft.AspNetCore.SignalR.Redis`, call <xref:Microsoft.Extensions.DependencyInjection.RedisDependencyInjectionExtensions.AddRedis*>.
+
+  In the preceding code, `options.Configuration` is initialized with whatever was specified in the connection string.
+
+  For information about Redis options, see the [StackExchange Redis documentation](https://stackexchange.github.io/StackExchange.Redis/Configuration.html).
+
+:::moniker-end
+
+:::moniker range=">= aspnetcore-3.0"
+
+* In the SignalR app, install the following NuGet package:
+
+  * `Microsoft.AspNetCore.SignalR.StackExchangeRedis`
+  
+* In the `Startup.ConfigureServices` method, call <xref:Microsoft.Extensions.DependencyInjection.StackExchangeRedisDependencyInjectionExtensions.AddStackExchangeRedis*>:
+
+  ```csharp
+  services.AddSignalR().AddStackExchangeRedis("<your_Redis_connection_string>");
+  ```
+  
 * Configure options as needed:
  
   Most options can be set in the connection string or in the [ConfigurationOptions](https://stackexchange.github.io/StackExchange.Redis/Configuration#configuration-options) object. Options specified in `ConfigurationOptions` override the ones set in the connection string.
@@ -85,7 +119,7 @@ This article explains SignalR-specific aspects of setting up a [Redis](https://r
 
   For information about Redis options, see the [StackExchange Redis documentation](https://stackexchange.github.io/StackExchange.Redis/Configuration.html).
 
-::: moniker-end
+:::moniker-end
 
 * If you're using one Redis server for multiple SignalR apps, use a different channel prefix for each SignalR app.
 
@@ -96,7 +130,6 @@ This article explains SignalR-specific aspects of setting up a [Redis](https://r
   * [IIS](/iis/extensions/configuring-application-request-routing-arr/http-load-balancing-using-application-request-routing)
   * [HAProxy](https://www.haproxy.com/blog/load-balancing-affinity-persistence-sticky-sessions-what-you-need-to-know/)
   * [Nginx](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/#sticky)
-  * [pfSense](https://www.netgate.com/docs/pfsense/loadbalancing/inbound-load-balancing.html#sticky-connections)
 
 ## Redis server errors
 
@@ -114,7 +147,7 @@ SignalR automatically reconnects when the Redis server is available again.
 
 Here's an example that shows how to handle Redis connection failure events.
 
-::: moniker range="= aspnetcore-2.1"
+:::moniker range="= aspnetcore-2.1"
 
 ```csharp
 services.AddSignalR()
@@ -144,9 +177,9 @@ services.AddSignalR()
         });
 ```
 
-::: moniker-end
+:::moniker-end
 
-::: moniker range="> aspnetcore-2.1"
+:::moniker range="> aspnetcore-2.1"
 
 ```csharp
 services.AddSignalR()
@@ -177,11 +210,11 @@ services.AddSignalR()
         });
 ```
 
-::: moniker-end
+:::moniker-end
 
-## Clustering
+## Redis Clustering
 
-Clustering is a method for achieving high availability by using multiple Redis servers. Clustering isn't officially supported, but it might work.
+[Redis Clustering](https://redis.io/topics/cluster-spec) is a method for achieving high availability by using multiple Redis servers. Clustering isn't officially supported, but it might work.
 
 ## Next steps
 
@@ -190,4 +223,4 @@ For more information, see the following resources:
 * <xref:signalr/scale>
 * [Redis documentation](https://redis.io/documentation)
 * [StackExchange Redis documentation](https://stackexchange.github.io/StackExchange.Redis/)
-* [Azure Redis Cache documentation](https://docs.microsoft.com/azure/redis-cache/)
+* [Azure Redis Cache documentation](/azure/redis-cache/)

@@ -1,15 +1,17 @@
 ---
-title: ASP.NET Core Data Protection
+title: ASP.NET Core Data Protection Overview
 author: rick-anderson
 description: Learn about the concept of data protection and the design principles of the ASP.NET Core Data Protection APIs.
 ms.author: riande
 ms.custom: mvc
-ms.date: 10/24/2018
+ms.date: 03/07/2022
 uid: security/data-protection/introduction
 ---
-# ASP.NET Core Data Protection
+# ASP.NET Core Data Protection Overview
 
-Web applications often need to store security-sensitive data. Windows provides DPAPI for desktop applications but this is unsuitable for web applications. The ASP.NET Core data protection stack provide a simple, easy to use cryptographic API a developer can use to protect data, including key management and rotation.
+The ASP.NET Core data protection provides a cryptographic API to protect data, including key management and rotation.
+
+Web applications often need to store security-sensitive data. Windows provides a data protection API, [DPAPI](/dotnet/standard/security/how-to-use-data-protection), but Windows DPAPI isn't intended for use in web applications.
 
 The ASP.NET Core data protection stack is designed to serve as the long-term replacement for the &lt;machineKey&gt; element in ASP.NET 1.x - 4.x. It was designed to address many of the shortcomings of the old cryptographic stack while providing an out-of-the-box solution for the majority of use cases modern applications are likely to encounter.
 
@@ -39,7 +41,7 @@ We started by identifying problems with the existing stack. Once we had that, we
 
 With these principles in mind we developed a simple, [easy to use](xref:security/data-protection/using-data-protection) data protection stack.
 
-The ASP.NET Core data protection APIs are not primarily intended for indefinite persistence of confidential payloads. Other technologies like [Windows CNG DPAPI](https://msdn.microsoft.com/library/windows/desktop/hh706794%28v=vs.85%29.aspx) and [Azure Rights Management](/rights-management/) are more suited to the scenario of indefinite storage, and they have correspondingly strong key management capabilities. That said, there's nothing prohibiting a developer from using the ASP.NET Core data protection APIs for long-term protection of confidential data.
+The ASP.NET Core data protection APIs are not primarily intended for indefinite persistence of confidential payloads. Other technologies like [Windows CNG DPAPI](/windows/win32/seccng/cng-dpapi) and [Azure Rights Management](/rights-management/) are more suited to the scenario of indefinite storage, and they have correspondingly strong key management capabilities. That said, there's nothing prohibiting a developer from using the ASP.NET Core data protection APIs for long-term protection of confidential data.
 
 ## Audience
 
@@ -73,4 +75,5 @@ The data protection stack consists of five packages.
 
 ## Additional resources
 
-<xref:host-and-deploy/web-farm>
+* <xref:security/data-protection/using-data-protection>
+* <xref:host-and-deploy/web-farm>
